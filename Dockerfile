@@ -1,11 +1,18 @@
 FROM node:14.15.3-alpine
 
-LABEL maintainer="Nightscout Contributors"
+MAINTAINER Arnaud
 
-RUN mkdir -p /opt/app
-ADD . /opt/app
-WORKDIR /opt/app
-RUN chown -R node:node /opt/app
+# RUN apk add --no-cache python python-dev python3 python3-dev \
+#     linux-headers build-base bash git ca-certificates && \
+#     python3 -m ensurepip && \
+#     rm -r /usr/lib/python*/ensurepip && \
+#     pip3 install --upgrade pip setuptools && \
+#     if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
+#     rm -r /root/.cache
+
+WORKDIR /app
+ADD . /app
+RUN chown -R node:node /app
 USER node
 
 RUN npm install && \
@@ -13,6 +20,12 @@ RUN npm install && \
   npm run env && \
   npm audit fix
 
-EXPOSE 1337
+ENV PORT=8080
+EXPOSE 8080
 
-CMD ["node", "lib/server/server.js"]
+
+CMD ["node", "server.js"]
+# COPY package.json .
+
+# COPY . .
+
